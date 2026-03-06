@@ -2,21 +2,31 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Gelibolu Yazıcızade - GitHub CSV Pro</title>
+    <title>Gelibolu Yazıcızade - Dijital Mahya v11</title>
     <style>
         :root { --bg-dark: #020205; --panel-bg: #fdf5e6; --gold: #d4af37; --red: #bf360c; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: var(--bg-dark); font-family: 'Georgia', serif; display: flex; color: #3d2b1f; }
         .ramadan-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 30%, #1a1a2e 0%, #020205 100%); z-index: -1; }
         .main-layout { display: flex; width: 100%; height: 100vh; align-items: center; justify-content: space-between; padding: 0 40px; box-sizing: border-box; }
+        
+        /* Yan Paneller */
         .side-panel { width: 220px; height: 85vh; background-color: rgba(20, 20, 35, 0.95); border: 2px solid var(--gold); border-radius: 20px; display: flex; flex-direction: column; justify-content: space-around; align-items: center; box-shadow: 0 0 40px #000; }
         .side-text { color: #fdf5e6; font-size: 2rem; font-weight: bold; text-transform: uppercase; text-align: center; text-shadow: 2px 2px 5px #000; }
+        
+        /* Ana Pano */
         .mahya-frame { background-color: var(--panel-bg); border: 12px double #8b6508; border-radius: 50px; padding: 40px; width: 52%; text-align: center; box-shadow: 0 0 100px rgba(255, 215, 0, 0.3); position: relative; }
-        .logo { max-width: 300px; margin: 0 auto 20px auto; display: block; }
-        .owner-name { font-size: 3.2rem; font-weight: 900; color: #1a1a1a; text-transform: uppercase; line-height: 1; margin: 5px 0; }
-        #countdown { font-size: 11rem; font-weight: 900; font-family: 'Courier New', monospace; color: var(--red); text-shadow: 3px 3px 0px #fff; margin: 10px 0; line-height: 0.9; }
+        .logo { max-width: 300px; margin: 0 auto 15px auto; display: block; }
+        .date-str { font-size: 1.6rem; color: #7a5901; font-weight: bold; margin-bottom: 20px; border-bottom: 1px solid rgba(0,0,0,0.1); display: inline-block; padding-bottom: 5px; }
+        
+        .owner-name { font-size: 3.4rem; font-weight: 900; color: #1a1a1a; text-transform: uppercase; line-height: 1; margin: 5px 0; }
+        .blessing { font-size: 2.2rem; color: #1b5e20; font-weight: bold; margin: 20px 0; font-style: italic; }
+        
+        /* Sayaç */
+        #countdown { font-size: 11rem; font-weight: 900; font-family: 'Courier New', monospace; color: var(--red); text-shadow: 3px 3px 0px #fff, 5px 5px 20px rgba(0,0,0,0.2); margin: 10px 0; line-height: 0.9; }
         .status-msg { font-size: 6rem; font-weight: 900; color: #d32f2f; display: none; animation: pulse 1s infinite; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        #api-info { position: absolute; bottom: 15px; width: 100%; left: 0; font-size: 0.8rem; color: #8b6508; opacity: 0.6; }
+        
+        #api-info { position: absolute; bottom: 15px; width: 100%; left: 0; font-size: 0.8rem; color: #8b6508; opacity: 0.5; }
     </style>
 </head>
 <body onclick="initAudio()">
@@ -27,97 +37,120 @@
 </audio>
 
 <div class="main-layout">
-    <div class="side-panel"><div class="side-text">SAHUR</div><div class="side-text">İFTAR</div><div class="side-text">FİTRE</div></div>
+    <div class="side-panel">
+        <div class="side-text">SAHUR</div>
+        <div class="side-text">İFTAR</div>
+        <div class="side-text">FİTRE</div>
+    </div>
+
     <div class="mahya-frame">
         <img src="logo.png" class="logo" onerror="this.style.visibility='hidden'">
-        <div id="full-date" style="font-weight:bold; color:#7a5901; font-size: 1.5rem;">YÜKLENİYOR...</div>
-        <div id="owner-area"><div style="color:#5d4037; font-weight:bold;">İftar Sahibi:</div><div id="owner1" class="owner-name">...</div><div id="owner2" class="owner-name"></div></div>
-        <div class="status-msg" id="vakit-geldi">İFTAR VAKTİ!</div>
-        <div id="timer-section"><div id="timer-label" style="font-weight:bold; color:#5d4037;">VAKTE KALAN</div><div id="countdown">00:00:00</div></div>
-        <div style="font-size:2rem; color:#1b5e20; font-weight:bold; margin-top:20px;">Allah Razı Olsun</div>
-        <div id="api-info">CSV dosyası yükleniyor...</div>
+        <div id="full-date" class="date-str">BAĞLANILIYOR...</div>
+        
+        <div id="owner-area">
+            <div style="color:#5d4037; font-weight:bold; font-size: 1.4rem;">Bugünün İftar Sahibi:</div>
+            <div id="owner1" class="owner-name">...</div>
+            <div id="owner2" class="owner-name"></div>
+        </div>
+
+        <div class="blessing">Allah Razı Olsun</div>
+
+        <div id="timer-section">
+            <div style="font-weight:bold; color:#5d4037; font-size: 1.8rem; letter-spacing: 2px;">VAKTE KALAN</div>
+            <div id="countdown">00:00:00</div>
+        </div>
+        
+        <div id="vakit-geldi" class="status-msg">İFTAR VAKTİ!</div>
+        <div id="api-info">Veriler Google Tablodan Çekiliyor...</div>
     </div>
-    <div class="side-panel"><div class="side-text">FİDYE</div><div class="side-text">ZEKAT</div><div class="side-text">KURBAN</div></div>
+
+    <div class="side-panel">
+        <div class="side-text">FİDYE</div>
+        <div class="side-text">ZEKAT</div>
+        <div class="side-text">KURBAN</div>
+    </div>
 </div>
 
 <script>
-    // CSV Dosya Adı (HTML ile aynı klasörde olmalı)
-    const csvFile = "RAMAZAN - RAMAZAN.csv";
+    // Sizin en son oluşturduğunuz Web Uygulaması URL'si
+    const apiURL = "https://script.google.com/macros/s/AKfycbw3qXBMbrQbL53Nmn0jjG9vD6cM5Q2NwgA0T4qg_SAaPHw7Llpa1gY9j49vNlxPDxlbDA/exec";
 
-    async function loadCSV() {
-        try {
-            const response = await fetch(csvFile + "?t=" + Date.now());
-            const text = await response.text();
-            
-            // Satırları ayır (virgül veya noktalı virgül kontrolü)
-            const rows = text.split('\n').map(r => r.split(','));
-            
-            // Bugünü GG.AA.YYYY formatında hazırla
-            const simdi = new Date();
-            const bugunStr = `${String(simdi.getDate()).padStart(2,'0')}.${String(simdi.getMonth()+1).padStart(2,'0')}.${simdi.getFullYear()}`;
-            
-            // CSV'de bugünü ara (1. sütun Tarih)
-            const row = rows.find(r => r[1] && r[1].trim() === bugunStr);
+    function fetchData() {
+        const script = document.createElement('script');
+        // JSONP Callback kullanarak güvenlik duvarını aşıyoruz
+        script.src = apiURL + "?callback=handleResponse&t=" + Date.now();
+        document.body.appendChild(script);
+    }
 
-            if (row) {
-                // Sütun eşleşmeleri: 7=İftar, 8=Yatsı, 9=Sahibi1, 10=Sahibi2
-                document.getElementById('owner1').innerText = row[9] ? row[9].trim() : "---";
-                document.getElementById('owner2').innerText = row[10] ? row[10].trim() : "";
-                document.getElementById('full-date').innerText = simdi.toLocaleDateString('tr-TR', {year:'numeric', month:'long', day:'numeric', weekday:'long'});
-                document.getElementById('api-info').innerText = "Veri Kaynağı: Yerel CSV (" + bugunStr + ")";
-                
-                startSystem(row[7].trim(), row[8].trim());
-            } else {
-                document.getElementById('owner1').innerText = "KAYIT BULUNAMADI";
-                document.getElementById('api-info').innerText = bugunStr + " için CSV'de satır yok.";
-            }
-        } catch (e) {
-            document.getElementById('api-info').innerText = "CSV Yükleme Hatası!";
+    function handleResponse(data) {
+        if (data.found) {
+            document.getElementById('owner1').innerText = data.sahibi1 || "";
+            document.getElementById('owner2').innerText = data.sahibi2 || "";
+            document.getElementById('full-date').innerText = new Date().toLocaleDateString('tr-TR', {year:'numeric', month:'long', day:'numeric', weekday:'long'});
+            document.getElementById('api-info').innerText = "Son Senkronizasyon: " + data.tarih;
+            
+            startCountdown(data.iftar, data.teravih);
+        } else {
+            document.getElementById('owner1').innerText = "TABLODA KAYIT YOK";
+            document.getElementById('api-info').innerText = "Bugünün tarihi için veri bulunamadı.";
         }
     }
 
     let hasShot = false;
-    function startSystem(iftar, teravih) {
+    function startCountdown(iftar, teravih) {
         if (window.mainTimer) clearInterval(window.mainTimer);
         window.mainTimer = setInterval(() => {
             const simdi = new Date();
             const nowSec = (simdi.getHours() * 3600) + (simdi.getMinutes() * 60) + simdi.getSeconds();
+            
+            // İftar vaktini saniyeye çevir
             const [iH, iM] = iftar.split(':').map(Number);
             const iftarSec = (iH * 3600) + (iM * 60);
 
+            // Ramazan Topu
             if (nowSec === iftarSec && !hasShot) {
-                document.getElementById('cannon-sound').play().catch(e => console.log("Ses izni yok."));
+                document.getElementById('cannon-sound').play().catch(() => {});
                 hasShot = true;
                 setTimeout(() => { hasShot = false; }, 60000);
             }
 
-            let target, label;
+            let target;
             if (nowSec < iftarSec) {
-                target = iftar; label = "GELİBOLU İÇİN İFTARA KALAN";
+                target = iftar;
                 document.getElementById('vakit-geldi').style.display = "none";
                 document.getElementById('timer-section').style.display = "block";
-            } else if (nowSec < iftarSec + 600) {
+            } else if (nowSec < iftarSec + 900) { // 15 dakika iftar uyarısı
                 document.getElementById('timer-section').style.display = "none";
                 document.getElementById('vakit-geldi').style.display = "block";
                 return;
             } else {
-                target = teravih; label = "TERAVİH VAKTİNE KALAN";
+                target = teravih;
                 document.getElementById('vakit-geldi').style.display = "none";
                 document.getElementById('timer-section').style.display = "block";
             }
 
-            document.getElementById('timer-label').innerText = label;
             const [h, m] = target.split(':');
-            const tDate = new Date(); tDate.setHours(h, m, 0);
-            let diff = tDate - simdi;
-            const hh = Math.floor(diff/3600000), mm = Math.floor((diff%3600000)/60000), ss = Math.floor((diff%60000)/1000);
-            document.getElementById('countdown').innerText = `${String(Math.max(0,hh)).padStart(2,'0')}:${String(Math.max(0,mm)).padStart(2,'0')}:${String(Math.max(0,ss)).padStart(2,'0')}`;
+            const targetDate = new Date(); targetDate.setHours(h, m, 0);
+            let diff = targetDate - simdi;
+
+            const hh = Math.floor(diff / 3600000);
+            const mm = Math.floor((diff % 3600000) / 60000);
+            const ss = Math.floor((diff % 60000) / 1000);
+
+            document.getElementById('countdown').innerText = 
+                `${String(Math.max(0,hh)).padStart(2,'0')}:${String(Math.max(0,mm)).padStart(2,'0')}:${String(Math.max(0,ss)).padStart(2,'0')}`;
         }, 1000);
     }
 
-    function initAudio() { document.getElementById('cannon-sound').load(); document.getElementById('api-info').innerText = "Sistem ve Ses Aktif."; }
-    loadCSV();
-    setInterval(loadCSV, 3600000); // Saat başı kontrol
+    function initAudio() { 
+        document.getElementById('cannon-sound').load();
+        document.getElementById('api-info').innerText = "Ses ve Veri Akışı Aktif.";
+    }
+
+    // İlk çalıştırma
+    fetchData();
+    // 10 dakikada bir veriyi yenile
+    setInterval(fetchData, 600000);
 </script>
 </body>
 </html>
